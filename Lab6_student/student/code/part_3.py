@@ -20,17 +20,17 @@ Uses:
 class TransferResNet18(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
-        """
-        TODO: Create a TransferResNet18 model with a pretrained ResNet18 backbone and a new classifier head.
-        """
+        weights = models.ResNet18_Weights.DEFAULT
+        self.model = models.resnet18(weights=weights)
 
-        raise NotImplementedError("TransferResNet18 is not implemented")
+        for param in self.model.parameters():
+            param.requires_grad = False
+
+        self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
 
     def forward(self, x):
-        """
-        TODO: Pass input through the TransferResNet18 model.
-        """
-        raise NotImplementedError("TransferResNet18 is not implemented")
+        return self.model(x)
 
 
 def main():
