@@ -17,7 +17,7 @@ class ResNeXtBlock(nn.Module):
 
     def __init__(self, channels, cardinality=4):
         super().__init__()
-        self.paths = nn.modulelist([
+        self.paths = nn.ModuleList([
             ConvBlock(channels, channels)
             for _ in range(cardinality)
         ])
