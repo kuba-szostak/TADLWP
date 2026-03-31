@@ -15,26 +15,12 @@ Part 2 — ResNeXt
 
 class ResNeXtBlock(nn.Module):
 
-    def __init__(self, channels, cardinality=4, bottleneck_width=16):
-        """
-        TODO: Create a ResNeXt block with a parallel convolution blocks (cardinality number of them)
-        and a skip connection. ModuleList can be used to store the convolution blocks.
-        """
+    def __init__(self, channels, cardinality=4):
         super().__init__()
-        self.cardinality = cardinality
-        self.paths = nn.ModuleList()
-        for _ in range(cardinality):
-          path = nn.Sequential(
-            nn.Conv2d(channels, bottleneck_width, kernel_size=1),
-            nn.ReLU(inplace=True),
-
-            nn.Conv2d(bottleneck_width, bottleneck_width, kernel_size=3, padding=1),
-            nn.ReLU(inplace=True),
-            
-            nn.Conv2d(bottleneck_width, channels, kernel_size=1),
-          )
-          self.paths.append(path)
-
+        self.paths = nn.modulelist([
+            ConvBlock(channels, channels)
+            for _ in range(cardinality)
+        ])
 
     def forward(self, x):
         identity = x
@@ -42,18 +28,16 @@ class ResNeXtBlock(nn.Module):
         return torch.relu(out + identity)
 
 class SimpleResNeXt(nn.Module):
-    def __init__(self, num_classes=10, cardinality=4, bottleneck_width=16):
-        """
-        TODO: Create a SimpleResNeXt network with a convBlock at the start, two ResNeXt blocks and a classifier head.
-        """
+    def __init__(self, num_classes=10, cardinality=4):
         super().__init__()
-        raise NotImplementedError("SimpleResNeXt is not implemented")
-
+        self.net = nn.Sequential(
+             ConvBlock(3, 64),
+             ResNeXtBlock(64, cardinality),
+             ResNeXtBlock(64, cardinality),
+             ClassifierHead(64, num_classes)
+        )
     def forward(self, x):
-        """
-        TODO: Pass input through the SimpleResNeXt.
-        """
-        raise NotImplementedError("SimpleResNeXt is not implemented")
+        return self.net(x)
 
 def main():
     train_loader, val_loader, test_loader = get_dataloaders()
