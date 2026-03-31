@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE
+.idea/
+.vscode/
+
+# PyTorch
+*.pth
+*.pt
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project specific
+*.svg
+*.png
